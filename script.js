@@ -82,23 +82,22 @@ async function getBotResponse(prompt) {
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt }) // match backend expected key
+      body: JSON.stringify({ prompt })
     });
+
+    const rawText = await response.text(); // read once
 
     let data;
     try {
-      // Try parsing as JSON
-      data = await response.json();
-    } catch (parseError) {
-      // Fallback to text for non-JSON responses
-      const text = await response.text();
-      console.error("Server returned non-JSON response:", text);
+      data = JSON.parse(rawText);
+    } catch {
+      console.error("Non-JSON response from server:", rawText);
       chatbox.lastChild.remove();
-      addMessage(`⚠️ Server error: ${text}`, 'bot');
+      addMessage(`⚠️ Server error: ${rawText}`, 'bot');
       return;
     }
 
-    chatbox.lastChild.remove(); // remove "Typing..."
+    chatbox.lastChild.remove();
 
     const botText = data.response?.trim();
     if (botText) {
@@ -112,8 +111,7 @@ async function getBotResponse(prompt) {
     addMessage("⚠️ Failed to fetch response.", 'bot');
     console.error("Fetch error:", error);
   }
-}     
-
+}
   // 📨 Handle form submission
   chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
