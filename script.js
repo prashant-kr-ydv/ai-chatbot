@@ -75,33 +75,44 @@ document.addEventListener('DOMContentLoaded', () => {
     speechSynthesis.speak(utterance);
   }
 
-  // 🤖 OpenAI Bot - call backend API route
-  async function getBotResponse(prompt) {
-    addMessage('Typing...', 'bot');
+ // 🤖 OpenAI Bot - call backend API route
+async function getBotResponse(prompt) {
+  addMessage('Typing...', 'bot');
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }) // match backend expected key
+    });
+
+    let data;
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }) // match backend expected key
-      });
-
-      const data = await response.json();
-      chatbox.lastChild.remove(); // remove "Typing..."
-
-      const botText = data.response?.trim(); // adjust to backend response key
-
-      if (botText) {
-        addMessage(botText, 'bot');
-        return botText;
-      } else {
-        addMessage("⚠️ No response from AI.", 'bot');
-      }
-    } catch (error) {
+      // Try parsing as JSON
+      data = await response.json();
+    } catch (parseError) {
+      // Fallback to text for non-JSON responses
+      const text = await response.text();
+      console.error("Server returned non-JSON response:", text);
       chatbox.lastChild.remove();
-      addMessage("⚠️ Failed to fetch response.", 'bot');
-      console.error(error);
+      addMessage(`⚠️ Server error: ${text}`, 'bot');
+      return;
     }
+
+    chatbox.lastChild.remove(); // remove "Typing..."
+
+    const botText = data.response?.trim();
+    if (botText) {
+      addMessage(botText, 'bot');
+      return botText;
+    } else {
+      addMessage("⚠️ No response from AI.", 'bot');
+    }
+  } catch (error) {
+    chatbox.lastChild.remove();
+    addMessage("⚠️ Failed to fetch response.", 'bot');
+    console.error("Fetch error:", error);
   }
+}     
 
   // 📨 Handle form submission
   chatForm.addEventListener('submit', async (e) => {
