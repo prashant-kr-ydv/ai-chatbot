@@ -7,16 +7,16 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
+  res.setHeader("Content-Type", "application/json"); // Force JSON response
+
   if (req.method !== "POST") {
-    res.status(405).json({ message: "Method not allowed" });
-    return;
+    return res.status(405).json({ error: true, message: "Method not allowed" });
   }
 
   const { prompt } = req.body;
 
   if (!prompt || prompt.trim() === "") {
-    res.status(400).json({ message: "Prompt is required" });
-    return;
+    return res.status(400).json({ error: true, message: "Prompt is required" });
   }
 
   try {
@@ -26,11 +26,19 @@ export default async function handler(req, res) {
       max_tokens: 500,
     });
 
-    const botResponse = completion.data.choices[0].message.content;
+    const botResponse = completion.data.choices?.[0]?.message?.content || "";
 
-    res.status(200).json({ response: botResponse });
+    return res.status(200).json({
+      error: false,
+      response: botResponse.trim(),
+    });
   } catch (error) {
     console.error("OpenAI API error:", error.response?.data || error.message);
-    res.status(500).json({ message: "OpenAI API request failed" });
+
+    return res.status(500).json({
+      error: true,
+      message: "OpenAI API request failed",
+      details: error.response?.data || error.message,
+    });
   }
 }
