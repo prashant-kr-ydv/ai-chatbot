@@ -99,6 +99,12 @@ async function getBotResponse(prompt) {
 
     chatbox.lastChild.remove();
 
+    if (data.error) {
+      addMessage(`⚠️ Error: ${data.message}`, 'bot');
+      console.error("Backend error details:", data.details || "No details");
+      return;
+    }
+
     const botText = data.response?.trim();
     if (botText) {
       addMessage(botText, 'bot');
@@ -112,6 +118,7 @@ async function getBotResponse(prompt) {
     console.error("Fetch error:", error);
   }
 }
+   
   // 📨 Handle form submission
   chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
