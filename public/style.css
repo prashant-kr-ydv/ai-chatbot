@@ -77,3 +77,39 @@ body.dark .context-menu button:hover { background-color: #444; }
 /* Utility & Responsive */
 .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
 @media screen and (max-width: 768px) { .container { flex-direction: column; height: 100%; } .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; } .sidebar h2, .sidebar ul { display: none; } }
+
+/* Responsive Design for Mobile */
+@media screen and (max-width: 768px) {
+  .container {
+    /* Use 100vh to ensure it fills the full viewport height */
+    height: 100vh; 
+    flex-direction: column;
+  }
+
+  .sidebar {
+    /* Make the sidebar a compact, scrollable top bar */
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    flex-shrink: 0; /* Prevent the sidebar from shrinking */
+    gap: 10px;
+  }
+
+  .sidebar h2, .sidebar ul {
+    /* Hide the chat history list on mobile to save space */
+    display: none;
+  }
+
+  .main {
+    /* Allow the main chat area to grow and fill the remaining space */
+    flex-grow: 1; 
+    /* This is a flexbox trick to prevent the chatbox from overflowing */
+    min-height: 0; 
+  }
+
+  .chatbox {
+    /* The chatbox will now correctly fill the space inside .main */
+    max-width: 100%;
+  }
+}
