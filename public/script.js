@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const newChatBtn = document.getElementById('new-chat');
     const darkToggle = document.getElementById('toggle-dark');
     const datetime = document.getElementById('datetime');
+    const micBtn = document.getElementById('mic');
 
     let chatHistory = [];
     let currentChatIndex = -1;
@@ -141,6 +142,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     newChatBtn.addEventListener('click', initializeNewChat);
     darkToggle.addEventListener('click', () => { document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')); });
+    micBtn.addEventListener('click', () => {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('Speech Recognition is not supported in this browser.');
+            return;
+        }
+        
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+
+        recognition.onresult = (event) => {
+            userInput.value = event.results[0][0].transcript;
+        };
+        recognition.onerror = (event) => {
+            alert(`Voice input error: ${event.error}`);
+        };
+        recognition.start();
+    });
     function updateDateTime() { datetime.textContent = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }); }
     if (localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark'); }
     loadHistory();
