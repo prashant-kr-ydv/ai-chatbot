@@ -126,4 +126,11 @@ body.dark .context-menu button:hover { background-color: #444; }
   .message {
     max-width: 85%; /* Allow messages to be a little wider */
   }
+  /* Inside your @media block */
+  .container {
+  /* Change this line from 100vh to use our new JS variable */
+    height: var(--app-height); 
+    flex-direction: column;
+  }
+
 }
