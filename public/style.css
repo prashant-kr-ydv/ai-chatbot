@@ -74,10 +74,6 @@ body.dark .context-menu { background: #333; border-color: #555; }
 body.dark .context-menu button { color: #eee; }
 body.dark .context-menu button:hover { background-color: #444; }
 
-/* Utility & Responsive */
-.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
-@media screen and (max-width: 768px) { .container { flex-direction: column; height: 100%; } .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; } .sidebar h2, .sidebar ul { display: none; } }
-
 /* Responsive Design for Mobile */
 @media screen and (max-width: 768px) {
   .container {
