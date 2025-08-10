@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Chatbot</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <button id="new-chat">+ New Chat</button>
+      <h2>Chats</h2>
+      <ul id="history-list"></ul>
+      <button id="toggle-dark">🌓 Dark Mode</button>
+    </aside>
+
+    <main class="main">
+      <div class="chat-header">
+        <h1>AI Chatbot <span role="img" aria-label="Robot face">🤖</span></h1>
+        <div id="datetime"></div>
+      </div>
+      <div class="chatbox" id="chatbox">
+        </div>
+
+      <form id="chat-form">
+        <label for="user-input" class="visually-hidden">Type your message</label>
+        <input type="text" id="user-input" placeholder="Type your message..." required />
+        <button type="submit" aria-label="Send message">Send</button>
+        <button type="button" id="mic" aria-label="Activate voice input">🎤︎︎</button>
+      </form>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
