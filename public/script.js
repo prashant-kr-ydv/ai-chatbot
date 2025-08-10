@@ -71,25 +71,27 @@ document.addEventListener('DOMContentLoaded', () => {
         currentChatIndex = index;
     }
 
-    chatForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const text = userInput.value.trim();
-        if (!text) return;
-        addMessage(text, 'user');
-        userInput.value = '';
-        const botReply = await getBotResponse(text);
-        if (!botReply) return;
+   chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = userInput.value.trim();
+    if (!text) return;
+    addMessage(text, 'user');
+    userInput.value = '';
+    const botReply = await getBotResponse(text);
+    if (!botReply) return;
 
-        if (currentChatIndex === -1) {
-            const newConversation = { preview: text.slice(0, 30) + (text.length > 30 ? '...' : ''), conversation: [{ sender: 'user', text }, { sender: 'bot', text: botReply }]};
-            chatHistory.push(newConversation);
-            currentChatIndex = chatHistory.length - 1;
-        } else {
-            chatHistory[currentChatIndex].conversation.push({ sender: 'user', text }, { sender: 'bot', text: botReply });
-        }
-        saveHistory();
-        renderHistory();
-    });
+    addMessage(botReply, 'bot'); // <-- ADD THIS MISSING LINE
+
+    if (currentChatIndex === -1) {
+        const newConversation = { preview: text.slice(0, 30) + (text.length > 30 ? '...' : ''), conversation: [{ sender: 'user', text }, { sender: 'bot', text: botReply }]};
+        chatHistory.push(newConversation);
+        currentChatIndex = chatHistory.length - 1;
+    } else {
+        chatHistory[currentChatIndex].conversation.push({ sender: 'user', text }, { sender: 'bot', text: botReply });
+    }
+    saveHistory();
+    renderHistory();
+});
 
     newChatBtn.addEventListener('click', initializeNewChat);
     darkToggle.addEventListener('click', () => { document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')); });
