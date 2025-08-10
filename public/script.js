@@ -1,3 +1,11 @@
+// This function calculates the real viewport height and sets it as a CSS variable.
+const setAppHeight = () => {
+    const doc = document.documentElement;
+    doc.style.setProperty('--app-height', `${window.innerHeight}px`);
+};
+window.addEventListener('resize', setAppHeight);
+setAppHeight(); // Set it on initial load
+
 document.addEventListener('DOMContentLoaded', () => {
     const chatbox = document.getElementById('chatbox');
     const chatForm = document.getElementById('chat-form');
