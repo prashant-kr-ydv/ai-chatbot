@@ -112,4 +112,18 @@ body.dark .context-menu button:hover { background-color: #444; }
     /* The chatbox will now correctly fill the space inside .main */
     max-width: 100%;
   }
+
+  /* Add these lines inside your @media block */
+
+  .main {
+    padding: 15px; /* Slightly reduce padding on mobile */
+  }
+
+  .chat-header h1 {
+    font-size: 1.2em; /* Make the main title a bit smaller */
+  }
+
+  .message {
+    max-width: 85%; /* Allow messages to be a little wider */
+  }
 }
