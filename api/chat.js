@@ -19,7 +19,6 @@ export default async function handler(req, res) {
         const response = await result.response;
         const botResponse = response.text();
 
-        // This line creates the correct JSON object
         return res.status(200).json({ response: botResponse });
 
     } catch (error) {

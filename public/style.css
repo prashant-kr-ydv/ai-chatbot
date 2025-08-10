@@ -66,7 +66,7 @@ body.dark .user-message { background-color: var(--user-msg-bg-dark); }
 body.dark .sidebar { background: var(--dark-gradient); }
 body.dark form input { background-color: #333; border-color: #555; color: #eee; }
 
-/* Context Menu */
+/* Context Menu Styles */
 .context-menu { position: absolute; background: var(--bg-light); border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 8px; border-radius: var(--border-radius-md); z-index: 1000; min-width: 150px; }
 .context-menu button { display: block; border: none; background: none; color: var(--text-dark); width: 100%; text-align: left; padding: 8px 12px; cursor: pointer; border-radius: 6px; }
 .context-menu button:hover { background-color: var(--bg-light-secondary); }

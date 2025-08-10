@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const newChatBtn = document.getElementById('new-chat');
     const darkToggle = document.getElementById('toggle-dark');
     const datetime = document.getElementById('datetime');
-    const micBtn = document.getElementById('mic');
 
     let chatHistory = [];
     let currentChatIndex = -1;
@@ -60,7 +59,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const li = document.createElement('li');
         li.textContent = summary;
         li.title = summary;
+        li.dataset.index = index;
         li.addEventListener('click', () => loadChat(index));
+        li.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            document.querySelector('.context-menu')?.remove();
+            const menu = document.createElement('div');
+            menu.className = 'context-menu';
+            menu.style.top = `${e.pageY}px`;
+            menu.style.left = `${e.pageX}px`;
+            const actions = [
+                { label: '✏️ Rename', action: () => renameChat(index) },
+                { label: '🗑️ Delete', action: () => deleteChat(index) }
+            ];
+            actions.forEach(item => {
+                const button = document.createElement('button');
+                button.innerHTML = item.label;
+                button.addEventListener('click', () => { item.action(); menu.remove(); });
+                menu.appendChild(button);
+            });
+            document.body.appendChild(menu);
+            const closeListener = (event) => {
+                if (!menu.contains(event.target)) {
+                    menu.remove();
+                    document.removeEventListener('click', closeListener);
+                }
+            };
+            setTimeout(() => document.addEventListener('click', closeListener), 0);
+        });
         return li;
     }
     
@@ -70,32 +96,51 @@ document.addEventListener('DOMContentLoaded', () => {
         conversation.forEach(msg => addMessage(msg.text, msg.sender));
         currentChatIndex = index;
     }
-
-   chatForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const text = userInput.value.trim();
-    if (!text) return;
-    addMessage(text, 'user');
-    userInput.value = '';
-    const botReply = await getBotResponse(text);
-    if (!botReply) return;
-
-    addMessage(botReply, 'bot'); // <-- ADD THIS MISSING LINE
-
-    if (currentChatIndex === -1) {
-        const newConversation = { preview: text.slice(0, 30) + (text.length > 30 ? '...' : ''), conversation: [{ sender: 'user', text }, { sender: 'bot', text: botReply }]};
-        chatHistory.push(newConversation);
-        currentChatIndex = chatHistory.length - 1;
-    } else {
-        chatHistory[currentChatIndex].conversation.push({ sender: 'user', text }, { sender: 'bot', text: botReply });
+    
+    function renameChat(index) {
+        const newName = prompt('Enter a new name for this chat:', chatHistory[index].preview);
+        if (newName && newName.trim()) {
+            chatHistory[index].preview = newName.trim();
+            saveHistory();
+            renderHistory();
+        }
     }
-    saveHistory();
-    renderHistory();
-});
+
+    function deleteChat(index) {
+        if (confirm(`Are you sure you want to delete the chat: "${chatHistory[index].preview}"?`)) {
+            chatHistory.splice(index, 1);
+            saveHistory();
+            renderHistory();
+            if (chatHistory.length > 0) {
+                loadChat(Math.max(0, index - 1));
+            } else {
+                initializeNewChat();
+            }
+        }
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = userInput.value.trim();
+        if (!text) return;
+        addMessage(text, 'user');
+        userInput.value = '';
+        const botReply = await getBotResponse(text);
+        if (!botReply) return;
+        addMessage(botReply, 'bot');
+        if (currentChatIndex === -1) {
+            const newConversation = { preview: text.slice(0, 30) + (text.length > 30 ? '...' : ''), conversation: [{ sender: 'user', text }, { sender: 'bot', text: botReply }]};
+            chatHistory.push(newConversation);
+            currentChatIndex = chatHistory.length - 1;
+        } else {
+            chatHistory[currentChatIndex].conversation.push({ sender: 'user', text }, { sender: 'bot', text: botReply });
+        }
+        saveHistory();
+        renderHistory();
+    });
 
     newChatBtn.addEventListener('click', initializeNewChat);
     darkToggle.addEventListener('click', () => { document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')); });
-
     function updateDateTime() { datetime.textContent = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }); }
     if (localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark'); }
     loadHistory();
