@@ -1,8 +1,9 @@
 {
-  "name": "ai-chatbot-vercel",
-  "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "@google/generative-ai": "^0.15.0"
-  }
+    "version": 2,
+    "rewrites": [
+        {
+            "source": "/api/chat",
+            "destination": "/api/chat.js"
+        }
+    ]
 }
